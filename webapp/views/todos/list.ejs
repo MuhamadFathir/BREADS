@@ -1,0 +1,207 @@
+<%- include('../partials/header') %>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="/avatar" class="rounded-circle overflow-hidden"
+                        style="width: 50px; height: 50px; border: 2px solid #ccc; display: block;">
+                        <img src="/images/avatar/<%= user.avatar || 'profil.jpg'%>" alt="Avatar"
+                            style="width: 100%; height: 100%; object-fit: cover;" />
+                    </a>
+
+                </div>
+                <h5 class="mb-0">
+                    <%= user.email %>
+                </h5>
+            </div>
+            <a href="/logout" class="btn btn-secondary">
+                <i class="fa-solid fa-right-from-bracket"></i>Sign Out
+            </a>
+        </div>
+        <div class="card-header text-center">
+            <h1>PostgreSQL Breads(Browse, Read, Edit, Add, Delete, Sort)</h1>
+        </div>
+        <div class="card-body">
+            <form method="get" action="">
+                <input type="hidden" name="page" value="1">
+                <input type="hidden" name="sortBy" value="<%= query.sortBy || 'id' %>">
+                <input type="hidden" name="sortMode" value="<%= query.sortMode || 'asc' %>">
+                
+                <div class="row mb-3">
+                    <label for="title" class="col-sm-2 col-form-label">Title</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" name="title" value="<%= query.title %>">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Deadline</label>
+                    <div class="col-sm-10">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <input type="date" class="form-control" id="deadline1" name="deadline1"
+                                    value="<%= query.deadline1 %>">
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <h6 class="mb-0">s.d.</h6>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="date" class="form-control" id="deadline2" name="deadline2"
+                                    value="<%= query.deadline2 %>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="complete" class="col-sm-2 col-form-label">Complete</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" aria-label="Default select example" name="complete">
+                            <option selected>-select complete-</option>
+                            <option value="true" <%=query.complete=='true' ? 'selected' : '' %>>Done</option>
+                            <option value="false" <%=query.complete=='false' ? 'selected' : '' %>>Not Yet</option>
+                        </select>
+                    </div>
+                </div>
+
+                <fieldset class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Operation</legend>
+                    <div class="col-sm-10">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="operation" id="OR" value="OR" checked>
+                            <label class="form-check-label" for="OR">
+                                OR
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="operation" id="AND" value="AND"
+                                <%=query.operation=='AND' ? 'checked' : '' %>>
+                            <label class="form-check-label" for="AND">
+                                AND
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <button type="submit" class="btn btn-info"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <!-- SEARCH -->
+                <a href="/todos" class="btn btn-warning"><i class="fa-solid fa-repeat"></i></a> <!-- RESET -->
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>
+                        <a href="/todos<%= url.replace(`sortBy=${sortBy}`, 'sortBy=title').replace(`sortMode=${sortMode}`, `sortMode=${sortMode == 'asc' ? 'desc' : 'asc'}`) %>"
+                            class="text-decoration-none text-dark">
+                            Title
+                            <% if (query.sortBy==='title' ) { %>
+                                <i class="fa-solid fa-sort-<%= query.sortMode === 'asc' ? 'up' : 'down' %>"></i>
+                                <% } else { %>
+                                    <i class="fa-solid fa-sort"></i>
+                                    <% } %>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/todos<%= url.replace(`sortBy=${sortBy}`, 'sortBy=complete').replace(`sortMode=${sortMode}`, `sortMode=${sortMode == 'asc' ? 'desc' : 'asc'}`) %>"
+                            class="text-decoration-none text-dark">
+                            Complete
+                            <% if (query.sortBy==='complete' ) { %>
+                                <i class="fa-solid fa-sort-<%= query.sortMode === 'asc' ? 'up' : 'down' %>"></i>
+                                <% } else { %>
+                                    <i class="fa-solid fa-sort"></i>
+                                    <% } %>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="/todos<%= url.replace(`sortBy=${sortBy}`, 'sortBy=deadline').replace(`sortMode=${sortMode}`, `sortMode=${sortMode == 'asc' ? 'desc' : 'asc'}`) %>"
+                            class="text-decoration-none text-dark">
+                            Deadline
+                            <% if (query.sortBy==='deadline' ) { %>
+                                <i class="fa-solid fa-sort-<%= query.sortMode === 'asc' ? 'up' : 'down' %>"></i>
+                                <% } else { %>
+                                    <i class="fa-solid fa-sort"></i>
+                                    <% } %>
+                        </a>
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(todos){ %>
+                <% todos.forEach((item, index)=> { %>
+                    <tr class="<%= moment(item.deadline).isBefore(moment()) && item.complete == false ? 'table-danger' : '' %>">
+                        <td>
+                            <%= index + offset + 1 %>
+                        </td>
+                        <td>
+                            <%= item.title%>
+                        </td>
+                        <td>
+                            <%= item.complete ? 'Done' : 'Not Yet' %>
+                        </td>
+                        <td>
+                            <%= moment(item.deadline).format('DD MMM YYYY HH:mm') %>
+                        </td>
+                        <td>
+                            <a href="/todos/edit?id=<%= item.id %>" class="btn btn-success"><i
+                                    class="fa-solid fa-pencil"></i></a> <!-- EDIT -->
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal" data-id="<%= item.id %>">
+                                <i class="fa-solid fa-trash"></i>
+                                <!-- EDIT -->
+                            </button>
+                        </td>
+                    </tr>
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Delete Confirmation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Apakah Anda yakin ingin menghapus data ini?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <a id="confirmDeleteBtn" href="/todos/delete?id=<%= item.id %>"
+                                        class="btn btn-warning">Yes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% } %>
+            </tbody>
+        </table>
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <a href="/todos/add" class="btn btn-primary"><i class="fa-solid fa-plus"></i></a> <!-- ADD -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination mb-0">
+                    <li class="page-item <%= page <= 1 ? 'd-none' : '' %>">
+                        <a class="page-link"
+                            href="/todos<%= url.replace(`page=${page}`, `page=${parseInt(page) - 1}`) %>"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <% for(let i=1; i <=pages; i++){ %>
+                        <li class="page-item <%= page == i ? ' active' : ''%>">
+                            <a class="page-link" href="/todos<%= url.replace(`page=${page}`, `page=${i}`) %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                        <% } %>
+                            <li class="page-item <%= page >= pages ? 'd-none' : '' %>">
+                                <a class="page-link"
+                                    href="/todos<%= url.replace(`page=${page}`, `page=${parseInt(page) + 1}`) %>"
+                                    aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <%- include('../partials/footer') %>

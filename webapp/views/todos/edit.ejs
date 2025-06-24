@@ -1,0 +1,44 @@
+<%- include('../partials/header') %>
+        <div class="card">
+            <div class="card-header text-center">
+                <h1>Updating Data</h1>
+            </div>
+            <div class="card-body">
+                <form method="post" action="">
+                    <div class="row mb-3">
+                        <label for="name" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" name="title" value="<%= data.title %>"
+                                required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Deadline</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" class="form-control" name="deadline" value="<%= data.deadline %>">
+                        </div>
+                    </div>
+                    <fieldset class="row mb-3">
+                        <legend class="col-form-label col-sm-2 pt-0">Complete</legend>
+                        <div class="col-sm-10">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="complete" name="complete"
+                                    <%=data.complete ? 'checked' : '' %> />
+                                <label class="form-check-label" for="complete">
+                                    done
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="card-footer">
+
+                        <button type="submit" value="Save" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+
+                        <a href="/todos">
+                            <button type="button" value="Cancle" class="btn btn-warning"><i class="fa-solid fa-rotate-right"></i></button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+<%- include('../partials/header') %>

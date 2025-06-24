@@ -1,0 +1,26 @@
+<%- include('../partials/header') %>
+        <div class="card">
+            <div class="card-header text-center">
+                <h1>Adding Data</h1>
+            </div>
+            <div class="card-body">
+                <form method="post" action="">
+                    <div class="row mb-3">
+                        <label for="name" class="col-sm-2 col-form-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="title" name="title" value="<%= data.title %>"
+                                required>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+
+                        <button type="submit" value="Save" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i></button>
+
+                        <a href="/todos">
+                            <button type="button" value="Cancle" class="btn btn-warning"><i class="fa-solid fa-rotate-right"></i></button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+<%- include('../partials/footer') %>
